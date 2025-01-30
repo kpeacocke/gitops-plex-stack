@@ -7,7 +7,7 @@ services:
       - PUID=1027
       - PGID=100
       - TZ=Australia/Sydney
-      - VERSION=docker
+      - VERSION=latest
       - PLEX_CLAIM=${PLEX_CLAIM:-}
     volumes:
       - '/volume1/dkrcfg/plex:/config'
