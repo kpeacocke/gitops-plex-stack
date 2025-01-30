@@ -8,6 +8,7 @@ services:
       - PGID=100
       - TZ=Australia/Sydney
       - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM:-}
     volumes:
       - '/volume1/dkrcfg/plex:/config'
       - '/volume1/TV:/data/media/TV'
