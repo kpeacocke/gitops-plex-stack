@@ -12,7 +12,6 @@ services:
       - '/volume1/dkrcfg/plex:/config'
       - '/volume1/TV:/data/media/TV'
       - '/volume1/Movies:/data/media/Movies'
-      - '/dev/shm:/transcode'
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
