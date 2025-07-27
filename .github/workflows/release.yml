@@ -1,0 +1,97 @@
+---
+name: Release
+
+"on":
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history including tags
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Commitizen
+        run: pip install commitizen
+
+      - name: Set Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Ensure initial tag if missing
+        run: |
+          git fetch --tags
+          echo "Checking for existing tags..."
+          TAG_COUNT=$(git tag | wc -l)
+          echo "Found $TAG_COUNT tags"
+
+          if [ "$TAG_COUNT" -eq 0 ]; then
+            echo "No existing tags found. Bootstrapping v0.1.0"
+            echo "0.1.0" > .version
+            git add .version
+            git commit -m "chore: bootstrap version 0.1.0"
+            git tag v0.1.0
+            git push origin v0.1.0
+          else
+            echo "Tags exist. Listing current tags:"
+            git tag --list
+
+            # Ensure .version file exists and matches a valid tag
+            if [ ! -f .version ] || [ ! -s .version ]; then
+              LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || git tag --sort=-version:refname | head -n1)
+              LATEST_VERSION=${LATEST_TAG#v}
+              echo "Setting .version to match latest tag: $LATEST_VERSION"
+              echo "$LATEST_VERSION" > .version
+              git add .version
+              if ! git diff --cached --quiet; then
+                git commit -m "chore: sync .version with latest tag $LATEST_TAG"
+                git push origin main
+              fi
+            else
+              echo ".version file exists with content: $(cat .version)"
+            fi
+          fi
+
+      - name: Bump version and generate changelog
+        run: |
+          echo "Attempting to bump version..."
+          if cz bump --yes --changelog; then
+            echo "Version bumped successfully"
+          else
+            EXIT_CODE=$?
+            if [ $EXIT_CODE -eq 3 ]; then
+              echo "No new commits found for version bump. This is normal."
+              exit 0
+            else
+              echo "Error during version bump (exit code: $EXIT_CODE)"
+              exit $EXIT_CODE
+            fi
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push updated files and tags
+        run: |
+          echo "Checking for changes to push..."
+          git status --porcelain
+
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to push"
+          else
+            echo "Pushing changes and tags..."
+            git push --follow-tags
+          fi
