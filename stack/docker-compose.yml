@@ -2,7 +2,9 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    network_mode: host
+    networks:
+      plex_vlan:
+        ipv4_address: 192.168.3.101
     environment:
       - PUID=1027
       - PGID=100
@@ -15,3 +17,13 @@ services:
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
+
+networks:
+  plex_vlan:
+    driver: macvlan
+    driver_opts:
+      parent: eth1
+    ipam:
+      config:
+        - subnet: 192.168.3.0/24
+          gateway: 192.168.3.1
