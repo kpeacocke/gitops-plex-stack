@@ -8,10 +8,12 @@ services:
       - 32400:32400/tcp   # Plex Web
       - 32469:32469/tcp   # GDM network discovery
       - 1900:1900/udp     # DLNA
+      - 5353:5353/udp     # Bonjour
       - 32410:32410/udp   # GDM
       - 32412:32412/udp   # GDM
       - 32413:32413/udp   # GDM
       - 32414:32414/udp   # GDM
+      - 8324:8324/tcp     # Plex Companion
     environment:
       - PUID=1027
       - PGID=100
