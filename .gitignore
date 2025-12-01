@@ -54,3 +54,6 @@ yarn-error.log*
 # 👇 Optional: ignore OS-specific metadata
 ehthumbs.db
 Icon?
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
