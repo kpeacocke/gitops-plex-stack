@@ -4,33 +4,39 @@ services:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
     network_mode: "host"
-    ports:
-      - 32400:32400/tcp   # Plex Web
-      - 32469:32469/tcp   # GDM network discovery
-      - 1900:1900/udp     # DLNA
-      - 5353:5353/udp     # Bonjour
-      - 32410:32410/udp   # GDM
-      - 32412:32412/udp   # GDM
-      - 32413:32413/udp   # GDM
-      - 32414:32414/udp   # GDM
-      - 8324:8324/tcp     # Plex Companion
+    labels:
+      - "app=plex"
+      - "managed-by=gitops"
     environment:
-      - PUID=1027
-      - PGID=100
-      - TZ=Australia/Sydney
-      - VERSION=latest
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VERSION=docker
     volumes:
-      - '/volume1/dkrcfg/plex:/config'
-      - '/volume1/TV:/data/media/TV'
-      - '/volume1/Movies:/data/media/Movies'
+      - '${PLEX_CONFIG_PATH}:/config'
+      - '${PLEX_TV_PATH}:/data/media/TV'
+      - '${PLEX_MOVIES_PATH}:/data/media/Movies'
     devices:
       - /dev/dri:/dev/dri
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:32400/web/index.html"]
+      test: ["CMD", "curl", "-f", "http://localhost:32400/identity"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
     tmpfs:
-      - /transcode:rw,size=8g
+      - /transcode:rw,size=${PLEX_TRANSCODE_SIZE}
+    deploy:
+      resources:
+        limits:
+          cpus: '${PLEX_CPU_LIMIT}'
+          memory: ${PLEX_MEMORY_LIMIT}
+        reservations:
+          cpus: '${PLEX_CPU_RESERVATION}'
+          memory: ${PLEX_MEMORY_RESERVATION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
