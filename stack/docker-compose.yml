@@ -26,14 +26,6 @@ services:
       start_period: 60s
     tmpfs:
       - /transcode:rw,size=${PLEX_TRANSCODE_SIZE}
-    deploy:
-      resources:
-        limits:
-          cpus: '${PLEX_CPU_LIMIT}'
-          memory: ${PLEX_MEMORY_LIMIT}
-        reservations:
-          cpus: '${PLEX_CPU_RESERVATION}'
-          memory: ${PLEX_MEMORY_RESERVATION}
     logging:
       driver: "json-file"
       options:
