@@ -11,7 +11,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - VERSION=docker
+      - VERSION=latest
     volumes:
       - '${PLEX_CONFIG_PATH}:/config'
       - '${PLEX_TV_PATH}:/data/media/TV'
