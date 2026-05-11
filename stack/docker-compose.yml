@@ -16,6 +16,7 @@ services:
       - '${PLEX_CONFIG_PATH}:/config'
       - '${PLEX_TV_PATH}:/data/media/TV'
       - '${PLEX_MOVIES_PATH}:/data/media/Movies'
+      - '${PLEX_TRANSCODE_PATH}:/transcode'
     devices:
       - /dev/dri:/dev/dri
     healthcheck:
@@ -24,8 +25,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-    tmpfs:
-      - /transcode:rw,size=${PLEX_TRANSCODE_SIZE}
     logging:
       driver: "json-file"
       options:
