@@ -5,8 +5,11 @@ services:
     container_name: plex
     network_mode: "host"
     labels:
-      - "app=plex"
-      - "managed-by=gitops"
+      app: "plex"
+      com.ambitiouscake.managed-by: "portainer-gitops"
+      com.ambitiouscake.environment: "production"
+      com.ambitiouscake.stack: "plex"
+      com.centurylinklabs.watchtower.enable: "true"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
