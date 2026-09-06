@@ -146,6 +146,12 @@ feature/* → Pull Request → main → Auto-deploy via Portainer
 
 ---
 
+## Backups
+
+Back up `PLEX_CONFIG_PATH` daily with Synology Hyper Backup and snapshots. Do
+not back up `PLEX_TRANSCODE_PATH`; it is disposable working data. See
+[`BACKUPS.md`](BACKUPS.md) for the restore contract and quarterly test.
+
 ## 🏗️ Stack Details
 
 ### Plex Media Server
