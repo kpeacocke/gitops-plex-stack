@@ -17,8 +17,8 @@ services:
       - VERSION=latest
     volumes:
       - '${PLEX_CONFIG_PATH}:/config'
-      - '${PLEX_TV_PATH}:/data/media/TV'
-      - '${PLEX_MOVIES_PATH}:/data/media/Movies'
+      - '${PLEX_TV_PATH}/library:/data/media/TV'
+      - '${PLEX_MOVIES_PATH}/library:/data/media/Movies'
       - '${PLEX_TRANSCODE_PATH}:/transcode'
     devices:
       - /dev/dri:/dev/dri
